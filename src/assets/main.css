@@ -2,3 +2,13 @@ pre {
     font-family: 'Consolas';
 }
 
+pre u {
+    cursor: pointer;
+    font-weight: 900;
+    color: #000;
+}
+
+pre b {
+    color: #000;
+    font-weight: 900;
+}

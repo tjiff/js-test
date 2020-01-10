@@ -30,7 +30,7 @@
   }
 
   let r = ''
-  <span :style="`text-decoration: ${isImplemented ? 'line-through' : 'none'}`">const t1 = new Test1()
+<span :style="`text-decoration: ${isImplemented ? 'line-through' : 'none'}`">  const t1 = new Test1()
   r = t1.test()
   console.log(r)</span><span class="green--text"> // => 'test' <span v-if="isShowRequire"
                                                                      class="blue--text">输出结果变成 'test1'</span></span></pre>
@@ -242,10 +242,11 @@
 </template>
 
 <script>
+  // todo 注意复现参数列表
   export default {
     name: 'How',
     data: () => ({
-      window: 2,
+      window: 1,
       isShowRequire: false,
       isImplemented: false,
       windowInner: 'code',
@@ -265,14 +266,5 @@
 </script>
 
 <style scoped>
-  u {
-    cursor: pointer;
-    font-weight: 900;
-    color: #000;
-  }
 
-  b {
-    color: #000;
-    font-weight: 900;
-  }
 </style>
