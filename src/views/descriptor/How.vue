@@ -5,7 +5,7 @@
         <v-card>
           <app-card-title>
             <template v-slot:items>
-              <v-btn text :color="setBtnColor(window === 1)" @click="window = 1">功能实现</v-btn>
+              <v-btn text :color="setBtnColor(window === 1)" @click="window = 1">原理示意代码</v-btn>
               <v-btn text :color="setBtnColor(window === 2)" @click="window = 2">一段代码和几个问题</v-btn>
             </template>
           </app-card-title>

@@ -5,7 +5,7 @@
         <v-card>
           <app-card-title>
             <template v-slot:items>
-              <v-btn text @click="window = TAB.CODE" :color="setBtnColor(window === TAB.CODE)">修改后的一段代码</v-btn>
+              <v-btn text @click="window = TAB.CODE" :color="setBtnColor(window === TAB.CODE)">在Vue中的变化</v-btn>
               <v-btn text @click="window = TAB.DEMO" :color="setBtnColor(window === TAB.DEMO)">小栗子</v-btn>
               <v-btn text @click="window = TAB.DEMO_BIG" :color="setBtnColor(window === TAB.DEMO_BIG)">大栗子</v-btn>
             </template>
@@ -37,37 +37,17 @@
             </v-window-item>
             <v-window-item :value="TAB.DEMO">
               <v-card-text>
+                <v-subheader>与 component.data</v-subheader>
                 <v-card>
                   <v-card-text>
 <pre>
-  export const Loading = (val?: string) => {
-    return function (target: any, key: string, descriptor: any) {
-      const original = descriptor.value
-      descriptor.value = async function (...args: any) {
-        if (val) {
-          this.loading[val] = true
-          await original.apply(this, args)
-          this.$nextTick(() => this.loading[val] = false)
-        } else {
-          this.loading = true
-          await original.apply(this, args)
-          this.$nextTick(() => this.loading = false)
-        }
-      }
-    }
-  }
-</pre>
-                  </v-card-text>
-                </v-card>
-                <v-card class="mt-2">
-                  <v-card-text>
-<pre>
-  // === Test1.vue ===
+  // === Test1.vue 一个加载状态 ===
+
   @Component
   class Test extends Vue {
-    loading = false
+    <b>loading = false</b>
 
-    @Loading
+    <b>@Loading</b>
     async getList() {
       <i>this.loading = true</i>
       // ...
@@ -75,36 +55,101 @@
     }
   }
   // template
-  this.loading ? 加载中... : list
-</pre>
-                  </v-card-text>
-                </v-card>
-                <v-card class="mt-2">
-                  <v-card-text>
-<pre>
-  // === Test2.vue ===
+  this.<b>loading</b> ? &lt;加载中/&gt; : &lt;list/&gt;
+
+  // === Test2.vue 多个加载状态 ===
+
   @Component
   class Test extends Vue {
     loading = {
-      list: false,
+      <b><span class="blue--text">list</span></b>: false,
+      <b><span class="green--text">submit</span></b>: false,
     }
 
-    @Loading('list')
+    @Loading('<b><span class="blue--text">list</span></b>')
     async getList() {
       <i>this.loading.list = true</i>
       // ...
       <i>this.loading.list = false</i>
     }
+
+    @Loading('<b><span class="green--text">submit</span></b>')
+    async sendSubmit() {
+      <i>this.loading.submit = true</i>
+      // ...
+      <i>this.loading.submit = false</i>
+    }
   }
   // template
-  this.loading.list ? 加载中... : list</pre>
+  this.loading.<b><span class="blue--text">list</span></b> ? &lt;加载中/&gt; : &lt;list/&gt;
+  ...
+  this.loading.<b><span class="green--text">submit</span></b> ? &lt;加载中/&gt; : &lt;submit-finish/&gt;</pre>
+                  </v-card-text>
+                </v-card>
+                <v-card class="mt-2">
+                  <v-card-text>
+<pre>
+  // === Loading.ts ===
+
+  export const Loading = (val?: string) => {
+    return function (target: any, key: string, descriptor: any) {
+      const original = descriptor.value
+      descriptor.value = async function (...args: any) {
+        if (val) {
+          <b>this.loading[val] = true</b>
+          await original.apply(this, args)
+          this.$nextTick(() => <b>this.loading[val] = false</b>)
+        } else {
+          <b>this.loading = true</b>
+          await original.apply(this, args)
+          this.$nextTick(() => <b>this.loading = false</b>)
+        }
+      }
+    }
+  }
+</pre>
                   </v-card-text>
                 </v-card>
               </v-card-text>
             </v-window-item>
             <v-window-item :value="TAB.DEMO_BIG">
               <v-card-text>
+                <v-subheader>与生命周期</v-subheader>
                 <v-card>
+                  <v-card-text>
+<pre>
+  // === Test3.vue ===
+
+  @Component
+  class Test extends Vue {
+    // === before ===
+    unRegister = null
+
+    created() {
+      // 注册 Sign
+      this.unRegister = SignRegister(10086, (signData) => this.handle(signData))
+    }
+
+    <b><span class="green--text">handle(signData) {
+      // 处理 Sign...
+    }</span></b>
+
+    beforeDestroy() {
+      // ...
+      this.unRegister();
+      // ...
+    }
+
+    // === after ===
+    <b>@Sign(10086)
+    <span class="green--text">handle(signData) {
+      // 处理 Sign...
+    }</span></b>
+  }
+</pre>
+                  </v-card-text>
+                </v-card>
+                <v-card class="mt-2">
                   <v-card-text>
                     <pre class="pointer" v-show="!isShowMergeEvent" @click="isShowMergeEvent = !isShowMergeEvent">  const mergeEvent = (old: null | (() => void) | Array&lt;() => void&gt;, newEvent: () => void) => {...}</pre>
                     <pre class="pointer" v-show="isShowMergeEvent" @click="isShowMergeEvent = !isShowMergeEvent">
@@ -126,46 +171,16 @@
   export const Sign = (signId?: any) => {
     return function (target: any, methodName: string, descriptor: any) {
       let unRegister: (() => void) | undefined
-      target.created = mergeEvent(target.created, function () {
+      target.<b>created</b> = mergeEvent(target.created, function () {
         unRegister = SignRegister(signId, descriptor.value.bind(this))
       })
-      target.beforeDestroy = mergeEvent(target.beforeDestroy, () => {
+      target.<b>beforeDestroy</b> = mergeEvent(target.beforeDestroy, () => {
         unRegister && unRegister()
         unRegister = undefined
       })
     }
   }
                     </pre>
-                  </v-card-text>
-                </v-card>
-                <v-card class="mt-2">
-                  <v-card-text>
-<pre>
-  // === Test3.vue ===
-  // === before ===
-  unRegister = null
-
-  created() {
-    // 注册 Sign
-    this.unRegister = SignRegister(10086, (signData) => this.handle(signData))
-  }
-
-  handle(signData) {
-    // 处理 Sign...
-  }
-
-  beforeDestroy() {
-    // ...
-    this.unRegister();
-    // ...
-  }
-
-  // === after ===
-  @Sign(10086)
-  handle(signData) {
-    // 处理 Sign...
-  }
-</pre>
                   </v-card-text>
                 </v-card>
               </v-card-text>

@@ -1,4 +1,4 @@
-# decorator-test
+# Javascript装饰器简易教程
 
 ## Project setup
 ```
