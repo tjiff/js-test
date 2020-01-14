@@ -57,6 +57,7 @@
                         <v-card>
                           <v-card-text>
                     <pre>
+  // 声明装饰器
   const Decorator = function (val: string) {
     return function (target: <u id="test-class">Test</u>, key: string, descriptor: <u id="descriptor">Descriptor</u>) {
       const origin = descriptor.value
@@ -70,6 +71,7 @@
   class Test {
     propVal = 'propVal'
 
+    // babel 编译
     @Decorator('val')
     test(arg: any) {
       return `test: return ${this.propVal} & ${arg}`

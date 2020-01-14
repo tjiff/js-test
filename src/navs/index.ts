@@ -9,9 +9,9 @@ export const navList = [
     title: '装饰器(decorator)',
     data: [
       {title: '什么是', to: '/descriptor/what', component: What},
+      {title: '原理', to: '/descriptor/how', component: How},
       {title: '为什么需要', to: '/descriptor/why', component: Why},
       {title: '工作中什么时候用', to: '/descriptor/when', component: When},
-      {title: '原理', to: '/descriptor/how', component: How},
       {title: '与Vue实践', to: '/descriptor/using', component: Using},
     ],
   },

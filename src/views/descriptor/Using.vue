@@ -6,6 +6,7 @@
           <app-card-title>
             <template v-slot:items>
               <v-btn text @click="window = TAB.CODE" :color="setBtnColor(window === TAB.CODE)">在Vue中的变化</v-btn>
+              <v-btn text @click="window = TAB.VPD" :color="setBtnColor(window === TAB.VPD)">第三方库中</v-btn>
               <v-btn text @click="window = TAB.DEMO" :color="setBtnColor(window === TAB.DEMO)">小栗子</v-btn>
               <v-btn text @click="window = TAB.DEMO_BIG" :color="setBtnColor(window === TAB.DEMO_BIG)">大栗子</v-btn>
             </template>
@@ -31,6 +32,40 @@
     @Decorator('val')
     test() {}
   }</pre>
+                  </v-card-text>
+                </v-card>
+              </v-card-text>
+            </v-window-item>
+            <v-window-item :value="TAB.VPD">
+              <v-card-text>
+                <v-card>
+                  <v-card-text>
+            <pre>
+
+  // === Test.vue ===
+  @Prop({required: true, default: 12345678})
+  value!: number
+
+
+  // === 引自 vue-property-decorator.js 8.2.2, 有修改 ===
+  /**
+   * decorator of a prop
+   * @param  options the options for the prop
+   * @return PropertyDecorator | void
+   */
+  export function Prop(options) {
+      // ...
+      return function (target, key) {
+          // ...
+          createDecorator(function (componentOptions, k) {
+              if (!componentOptions.props) {
+                componentOptions.props = {}
+              }
+              <b>componentOptions.props[k] = options;</b>
+          })(target, key);
+      };
+  }
+            </pre>
                   </v-card-text>
                 </v-card>
               </v-card-text>
@@ -120,14 +155,14 @@
 <pre>
   // === Test3.vue ===
 
+  // === before ===
   @Component
   class Test extends Vue {
-    // === before ===
     unRegister = null
 
     created() {
       // 注册 Sign
-      this.unRegister = SignRegister(10086, (signData) => this.handle(signData))
+      this.unRegister = SignRegister(<b>10086</b>, (signData) => this.handle(signData))
     }
 
     <b><span class="green--text">handle(signData) {
@@ -140,18 +175,22 @@
       // ...
     }
 
-    // === after ===
-    <b>@Sign(10086)
-    <span class="green--text">handle(signData) {
-      // 处理 Sign...
-    }</span></b>
+  // === after ===
+  @Component
+  class Test extends Vue {
+      <b>@Sign(10086)
+      <span class="green--text">handle(signData) {
+        // 处理 Sign...
+      }</span></b>
+    }
   }
 </pre>
                   </v-card-text>
                 </v-card>
                 <v-card class="mt-2">
                   <v-card-text>
-                    <pre class="pointer" v-show="!isShowMergeEvent" @click="isShowMergeEvent = !isShowMergeEvent">  const mergeEvent = (old: null | (() => void) | Array&lt;() => void&gt;, newEvent: () => void) => {...}</pre>
+                    <pre class="pointer" v-show="!isShowMergeEvent" @click="isShowMergeEvent = !isShowMergeEvent">  const mergeEvent = (old: null | (() => void) | Array&lt;() => void&gt;, newEvent: () => void) => {<span
+                      class="grey lighten-2">...</span>}</pre>
                     <pre class="pointer" v-show="isShowMergeEvent" @click="isShowMergeEvent = !isShowMergeEvent">
   const mergeEvent = (old: null | (() => void) | Array&lt;() => void&gt;, newEvent: () => void) => {
     if (old) {
@@ -168,7 +207,7 @@
   };</pre>
                     <pre>
 
-  export const Sign = (signId?: any) => {
+  export const Sign = (signId: any) => {
     return function (target: any, methodName: string, descriptor: any) {
       let unRegister: (() => void) | undefined
       target.<b>created</b> = mergeEvent(target.created, function () {
@@ -208,6 +247,7 @@
       CODE: 'code',
       DEMO: 'demo',
       DEMO_BIG: 'demoBig',
+      VPD: 'VPD',
     }
 
     setBtnColor(flag: boolean) {

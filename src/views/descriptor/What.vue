@@ -19,6 +19,9 @@
         <p>
           装饰器可以在不改变原有代码的前提下, 让一个函数或者类拥有原本没有的功能
         </p>
+        <small>
+          装饰器是 ES7 的一个新语法，目前仍处于第2阶段提案中(摘自网络 2019-07-02)
+        </small>
       </v-flex>
     </v-layout>
     <h3>一张图</h3>
@@ -129,5 +132,11 @@
 </script>
 
 <style scoped>
+  h3:first-child {
+    margin-top: 0;
+  }
 
+  h3 {
+    margin-top: 16px;
+  }
 </style>
